@@ -199,6 +199,15 @@
         <div style="font-size:4rem; margin-top:50px;">🎂 💖 🎈</div>
       </section>
 
+      <!-- ***** MUSIC PLAYER EMBED ***** -->
+      <div style="background: rgba(255,240,220,0.6); backdrop-filter: blur(12px); padding: 50px 30px; border-radius: 180px 20px 180px 20px; margin: 80px 0; border: 4px solid #fff7e9; box-shadow: 0 30px 40px #dab191; text-align: center;">
+        <h3 style="font-size: 3rem; color: #6d3c29; font-family: 'Dancing Script', cursive; margin-bottom: 30px;"><i class="fas fa-music" style="color: #be7c4a;"></i> Our Song 🎵 <i class="fas fa-music" style="color: #be7c4a;"></i></h3>
+        <div style="display: flex; justify-content: center;">
+          <iframe width="100%" style="max-width: 500px; height: 380px; border-radius: 80px 20px 80px 20px; border: 3px solid #fff9e6;" src="https://www.youtube.com/embed/videoseries?list=PLrAXtmErZgOeiKm4sgNOknGvNjby9efdf" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        </div>
+        <p style="font-size: 1.8rem; color: #673f2b; margin-top: 25px; font-style: italic;">💖 Eppadi Vandhaayo for my birthday love 💖</p>
+      </div>
+
       <!-- ***** CANDLE / MESSAGE BANNER (instead of timeline) ***** -->
       <div class="candle-banner">
         <span class="candle-item"><i class="fas fa-birthday-cake"></i> 20 candles</span>
@@ -234,6 +243,11 @@
     <button id="toggle-music"><i class="fas fa-music"></i></button>
   </div>
 
+  <!-- ===== AUDIO ELEMENT ===== -->
+  <audio id="romanticAudio" preload="auto">
+    <source src="./song.mp3" type="audio/mpeg">
+  </audio>
+
   <script>
     (function() {
       "use strict";
@@ -262,42 +276,29 @@
 
       // ---------- 🎶 MUSIC PLAYLIST ----------
       const playlist = [
-        '../Eppadi Vandhaayo.mp3',
-        'D:\Mine\Eppadi Vandhaayo.mp3',
-        'https://cdn.pixabay.com/audio/2022/08/02/audio_884fe92c21.mp3',
-        'https://cdn.pixabay.com/audio/2023/03/08/audio_868a9d5d1e.mp3',
+        './song.mp3'
       ];
       let trackIndex = 0;
-      const romanticAudio = new Audio();
+      const romanticAudio = document.getElementById('romanticAudio');
       romanticAudio.volume = 0.35;
       let isMusicPlaying = false;
       const musicBtn = document.getElementById('toggle-music');
 
-      function loadTrack(index) {
-        romanticAudio.src = playlist[index];
-        romanticAudio.load();
-      }
-      loadTrack(trackIndex);
-
       romanticAudio.addEventListener('ended', function() {
         trackIndex = (trackIndex + 1) % playlist.length;
-        loadTrack(trackIndex);
+        romanticAudio.src = playlist[trackIndex];
         romanticAudio.play().catch(e => console.log('playback error'));
       });
 
       romanticAudio.addEventListener('error', function() {
-        trackIndex = (trackIndex + 1) % playlist.length;
-        loadTrack(trackIndex);
-        if (isMusicPlaying) {
-          romanticAudio.play().catch(e => console.log('playback error'));
-        }
+        console.log('Audio load error - file may not exist at path: ' + playlist[trackIndex]);
       });
 
       function audioPlay() {
         romanticAudio.play().then(() => {
           isMusicPlaying = true;
           musicBtn.innerHTML = '<i class="fas fa-pause-circle"></i>';
-        }).catch(e => console.log('autoplay blocked'));
+        }).catch(e => console.log('Playback blocked:', e));
       }
       function audioPause() {
         romanticAudio.pause();
